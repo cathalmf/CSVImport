@@ -140,7 +140,9 @@ namespace CSVImporter.ViewModels
             {
                 FilePercentage = 0;
                 Log("Inserting Into Database. This may take a few minutes.");
-                DatabaseConnection.SqlBulkInsert("dbo.Accounts", TempFileName);
+
+                DatabaseConnection.SqlBulkInsert(TempFileName);
+
                 FilePercentage = 100;
                 Log("Database Insert Complete");
                 File.Delete(TempFileName);

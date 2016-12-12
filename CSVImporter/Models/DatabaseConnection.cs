@@ -12,10 +12,12 @@ namespace CSVImporter.MSSQLDatabaseConnection
     public class DatabaseConnection
     {
         private readonly static string ConnectionString;
+        private readonly static string TableName;
 
         static DatabaseConnection()
         {
             ConnectionString = ConfigurationManager.ConnectionStrings["Database"].ConnectionString;
+            TableName = ConfigurationManager.AppSettings["TableName"];
         }
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace CSVImporter.MSSQLDatabaseConnection
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static int SqlBulkInsert(string databaseTable, string path)
+        public static int SqlBulkInsert(string path)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
@@ -36,7 +38,7 @@ namespace CSVImporter.MSSQLDatabaseConnection
                             MAXERRORS = 0,
                             DATAFILETYPE = 'widechar',
                             KEEPIDENTITY
-                        )", databaseTable, "\"",path,"\"");
+                        )", TableName, "\"",path,"\"");
 
                 SqlCommand command = new SqlCommand(SQL, connection);
                 command.CommandTimeout = 10 * 60;   // Give the insert plenty of time. 
