@@ -146,10 +146,18 @@ namespace CSVImporter.ViewModels
                 FilePercentage = 0;
                 Log("Inserting Into Database. This may take a few minutes.");
 
-                DatabaseConnection.SqlBulkInsert(TempFileName);
+                try
+                {
+                    int InsertCount = DatabaseConnection.SqlBulkInsert(TempFileName);
+                    Log("Complete. Number of rows successfully inserted: " + InsertCount);
+                }
+                catch (SqlException ex)
+                {
+                    Log("SqlException - Failed to insert data. Reason: " + ex.Message);
+                }
 
                 FilePercentage = 100;
-                Log("Database Insert Complete");
+                
                 File.Delete(TempFileName);
             }
             else
