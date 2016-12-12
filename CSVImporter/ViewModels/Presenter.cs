@@ -79,6 +79,7 @@ namespace CSVImporter.ViewModels
 
         private int ValidLines;
         private int InvalidLines;
+        private StringBuilder InvalidLineDetails;
 
         #endregion
 
@@ -90,6 +91,7 @@ namespace CSVImporter.ViewModels
             Worker.WorkerReportsProgress = true;
             Worker.DoWork += Worker_DoWork;
             Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            InvalidLineDetails = new StringBuilder();
         }
 
         #endregion
@@ -111,6 +113,8 @@ namespace CSVImporter.ViewModels
             using (StreamReader OriginalSR = new StreamReader(ImportFilePath))
             using (CsvReader CsvReaderStream = new CsvReader(OriginalSR))
             {
+                Log("Validating CSV");
+
                 string[] fields = CsvReaderStream.Parser.Read();
 
                 do
@@ -125,6 +129,7 @@ namespace CSVImporter.ViewModels
                     else
                     {
                         InvalidLines++;
+                        InvalidLineDetails.Append(CsvReaderStream.Parser.RawRecord);
                     }
 
                     FilePercentage = (int)(((decimal)OriginalSR.BaseStream.Position / OriginalSR.BaseStream.Length) * 100);
@@ -153,6 +158,7 @@ namespace CSVImporter.ViewModels
             }
 
             Log(string.Format("Invalid Lines: {0}", InvalidLines));
+            Log(InvalidLineDetails.ToString());
         }
 
         #endregion
